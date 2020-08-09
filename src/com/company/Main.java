@@ -92,15 +92,15 @@ public class Main {
 
                 secim = getScannerInt("");
 
-                if (secim == -1) {
+                if (secim == 1) {
                     kitaprepo.tumUrunler(Kitaplar.ALINAN);
-                } else if (secim == 0) {
+                } else if (secim == 2) {
                     kitaprepo.tumUrunler(Kitaplar.ALINAN);
                     int kitapno = getScannerInt("Teslim etmek istediğin kitap no giriniz : ");
                     kitaprepo.update(kitapno, null);
-                } else if (secim == 1) {
+                } else if (secim == 3) {
                     kitaprepo.tumUrunler(Kitaplar.ALL);
-                } else if (secim == 2) {
+                } else if (secim == 4) {
                     int kitapno = getScannerIntCheck("Kitap no giriniz : ");
                     int isbn = getScannerInt("ISBN Giriniz : ");
                     String adi = getScannerText("Kitap Adı Giriniz : ");
@@ -114,7 +114,7 @@ public class Main {
 
                     kitap = new Kitap(kitapno, isbn, adi, yayinEviNo, kategorino, sayfasayisi, dilNo);
                     kitaprepo.kaydet(kitap);
-                } else if (secim == 3) {
+                } else if (secim == 5) {
                     kitaprepo.tumUrunler(Kitaplar.ALINMAYAN);
                     secim = getScannerInt("Ödünç almak istediğiniz Kitabın numarasını giriniz : ");
 
@@ -124,11 +124,11 @@ public class Main {
                     kitaprepo.update(secim, uye.getno());
                     System.out.println("Ürün Alınan Kitaplar Tablosuna eklendi.");
 
-                } else if (secim == 4) {
+                } else if (secim == 6) {
 
                     yazarRepo.getAll();
 
-                } else if (secim == 5) {
+                } else if (secim == 7) {
                     Adi = getScannerText("Adınızı Giriniz : ");
                     Soyadi = getScannerText("Soyadinizi Giriniz : ");
                     _sifre = getScannerText("Sadece Sayilardan olusan sifre giriniz : ");
@@ -137,16 +137,16 @@ public class Main {
                     uye = new Uye(Adi, Soyadi, KullaniciAdi, _sifre, email, uye.getno());
                     uyerepo.degistir(uye);
                     System.out.println("Bilgileriniz başarı ile değiştirilmiştir!");
-                } else if (secim == 6) {
-                    yayinRepo.getAll();
-                } else if (secim == 7) {
-                    dilRepo.getAll();
                 } else if (secim == 8) {
-                    kategoryRepo.getAll();
+                    yayinRepo.getAll();
                 } else if (secim == 9) {
+                    dilRepo.getAll();
+                } else if (secim == 10) {
+                    kategoryRepo.getAll();
+                } else if (secim == 11) {
                     devamMi = false;
                     uye = null;
-                } else if (secim == 10) {
+                } else if (secim == 12) {
                     devamMi = false;
                     exit = false;
                     Dao.getInstance().closeConnection();
