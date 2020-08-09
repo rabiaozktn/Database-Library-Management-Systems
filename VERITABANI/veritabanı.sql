@@ -35,6 +35,22 @@ $$;
 ALTER FUNCTION public.aktifyazarlarsayisi() OWNER TO postgres;
 
 --
+-- Name: bosluk_sil(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.bosluk_sil() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    NEW."KayitTurAciklama" = LTRIM(NEW."KayitTurAciklama");
+    RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.bosluk_sil() OWNER TO postgres;
+
+--
 -- Name: kategoridekikitaplar(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -70,6 +86,51 @@ $$;
 ALTER FUNCTION public."kayitEkleTR1"() OWNER TO postgres;
 
 --
+-- Name: kayitaktif(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.kayitaktif() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+NEW."AktifM"=NEW."AktifM"=True;
+	RETURN TRIGGER;
+	END; 
+	$$;
+
+
+ALTER FUNCTION public.kayitaktif() OWNER TO postgres;
+
+--
+-- Name: kayitguncelle(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.kayitguncelle() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    NEW."DepartmanAciklamasi" = LTRIM(NEW."DepartmanAciklamasi");
+    RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.kayitguncelle() OWNER TO postgres;
+
+--
+-- Name: listele(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.listele() RETURNS void
+    LANGUAGE sql
+    AS $$
+  SELECT * FROM "Uyeler";
+$$;
+
+
+ALTER FUNCTION public.listele() OWNER TO postgres;
+
+--
 -- Name: log_yazaradi_degisikligi(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -81,8 +142,6 @@ BEGIN
 		 INSERT INTO Uyeler(UyeNo,YazarAdi)
 		 VALUES(OLD.UyeNo,OLD.YazarAdi);
 	END IF;
-
-	RETURN NEW;
 END;
 $$;
 
@@ -301,7 +360,8 @@ CREATE TABLE public."Kitaplar" (
     "YayinTarihi" date,
     "AlanKullaniciNo" integer,
     "DilNo" integer NOT NULL,
-    "AldigiTarih" date
+    "AldigiTarih" date,
+    "OwnerId" character(1)
 );
 
 
@@ -534,12 +594,17 @@ INSERT INTO public."AlinanKitaplar" VALUES
 	(2, 2, 3, false),
 	(3, 3, 1, false),
 	(4, 4, 3, false),
-	(5, 5, 1, false),
-	(6, 5, 1, false),
 	(8, 3, 1, false),
 	(9, 10, 1, false),
 	(1, 1, 1, true),
-	(7, 6, 1, true);
+	(7, 6, 1, true),
+	(482, 1, 1, NULL),
+	(103, 6, 1, NULL),
+	(447, 7, 1, NULL),
+	(838, 1, 2, NULL),
+	(278, 2, 2, NULL),
+	(953, 6, 1, NULL),
+	(565, 10, 1, NULL);
 
 
 --
@@ -608,16 +673,15 @@ INSERT INTO public."KayitTurleri" VALUES
 --
 
 INSERT INTO public."Kitaplar" VALUES
-	(1, 12312312, 'C++ Programlama', 2, 1, 350, '1920-02-19', NULL, 8, '2010-02-19'),
-	(2, 1231231, 'c#', 2, 1, 450, '2010-05-05', NULL, 8, '2020-05-05'),
-	(5, 567890123, 'ReactJs', 3, 1, 100, '2019-12-09', NULL, 9, '2019-12-09'),
-	(6, 98765432, 'T-SQL Egitimi', 3, 1, 150, '2019-12-09', NULL, 3, '2019-12-09'),
-	(7, 987654321, 'React Native Kitap', 3, 1, 170, '2019-12-09', NULL, 9, '2019-12-09'),
-	(9, 765432109, 'MSSQL', 3, 1, 210, '2019-12-09', NULL, 9, '2019-12-09'),
-	(10, 555555555, 'Visual Studio', 2, 1, 310, '2019-12-09', NULL, 8, '2010-05-05'),
-	(3, 2312312, 'Integral', 2, 1, 150, '2010-05-05', NULL, 8, '2020-05-05'),
-	(4, 456789012, 'Lineer Cebir', 2, 1, 200, '2019-12-07', 1, 8, '2010-02-19'),
-	(8, 876543210, 'Serway', 3, 1, 200, '2019-12-09', NULL, 9, '2010-05-05');
+	(9, 765432109, 'MSSQL', 3, 1, 210, '2019-12-09', NULL, 9, '2019-12-09', NULL),
+	(3, 2312312, 'Integral', 2, 1, 150, '2010-05-05', NULL, 8, '2020-05-05', NULL),
+	(4, 456789012, 'Lineer Cebir', 2, 1, 200, '2019-12-07', 1, 8, '2010-02-19', NULL),
+	(8, 876543210, 'Serway', 3, 1, 200, '2019-12-09', NULL, 9, '2010-05-05', NULL),
+	(1, 12312312, 'C++ Programlama', 2, 1, 350, '1920-02-19', 1, 8, '2010-02-19', '2'),
+	(2, 1231231, 'C#', 2, 1, 450, '2010-05-05', NULL, 8, '2020-05-05', '2'),
+	(7, 987654321, 'React Native Kitap', 3, 1, 170, '2019-12-09', NULL, 9, '2019-12-09', NULL),
+	(6, 98765432, 'T-SQL Egitimi', 3, 1, 150, '2019-12-09', NULL, 3, '2019-12-09', NULL),
+	(10, 555555555, 'Visual Studio', 2, 1, 310, '2019-12-09', NULL, 8, '2010-05-05', NULL);
 
 
 --
@@ -651,11 +715,11 @@ INSERT INTO public."Personel" VALUES
 --
 
 INSERT INTO public."Uyeler" VALUES
-	(3, 'kullanici2', 'mehmet', 'ali', '321', 'mehmet@gmail.com', NULL, NULL),
-	(6, 'kullanici3', 'ayşe', 'ak', '213', 'ayşe@gmail.com', NULL, NULL),
-	(7, 'kullanici4', 'fatma', 'al', '312', 'fatma@gmail.com', NULL, NULL),
-	(1, 'yılmazali', 'yılmaz', 'ali', '123', 'yılmaz@gmail.com', NULL, NULL),
-	(2, 'ye', 'YıLMAZ', 'erdoğan', '321', 'yılmazerdo@gmail.com', NULL, NULL);
+	(3, 'kullanici2', 'Mehmet', 'KUŞ', '321', 'mehmet@gmail.com', NULL, NULL),
+	(7, 'kullanici4', 'Fatma', 'AK', '312', 'fatma@gmail.com', NULL, NULL),
+	(2, 'kullanici1', 'Sena', 'YURT', '321', 'senyurt@gmail.com', NULL, NULL),
+	(6, 'kullanici3', 'Tülay', 'POLAT', '213', 'tülay@gmail.com', NULL, NULL),
+	(1, 'rabiaozk', 'rabia', 'özaktan', '654', 'rabia98@gmail.com', NULL, NULL);
 
 
 --
@@ -681,7 +745,6 @@ INSERT INTO public."YazarKitap" VALUES
 	(6, 3, 1),
 	(7, 3, 2),
 	(8, 3, 3),
-	(9, 5, 1),
 	(10, 6, 5),
 	(12, 6, 5);
 

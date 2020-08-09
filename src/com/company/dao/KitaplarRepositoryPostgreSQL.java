@@ -1,6 +1,8 @@
 package com.company.dao;
 
+import com.company.Main;
 import com.company.entity.Kitap;
+import com.company.enums.Kitaplar;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -10,7 +12,7 @@ public class KitaplarRepositoryPostgreSQL {
 
     Connection conn;
 
-    public KitaplarRepositoryPostgreSQL(){
+    public KitaplarRepositoryPostgreSQL() {
         conn = Dao.getInstance().getConnection();
     }
 
@@ -35,52 +37,12 @@ public class KitaplarRepositoryPostgreSQL {
         return value;
     }
 
-    public Kitap ara(int kullan) {
-        System.out.println("Uye aranıyor...");
-        Kitap kitap = null;
-
-        String sql = "SELECT * FROM \"Kitaplar\" WHERE \"KitapNo\"=" + kullan;
-
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-
-//            conn.close();
-
-            int KitapNo;
-            int Isbn;
-            String adi;
-            int sayfa;
-            int yayinevino;
-            int kategorino;
-            int dilno;
-
-            while (rs.next()) {
-                // Kayda ait alan değerlerini değişkene ata //
-                KitapNo = rs.getInt("KitapNo");
-                Isbn = rs.getInt("ISBN");
-                adi = rs.getString("KitapAdi");
-                yayinevino = rs.getInt("YayinEviNo");
-                kategorino = rs.getInt("KategoriNo");
-                sayfa = rs.getInt("SayfaSayisi");
-                dilno = rs.getInt("DilNo");
-
-                kitap = new Kitap(KitapNo, Isbn, adi, yayinevino, kategorino, sayfa, dilno);
-            }
-            rs.close();
-            stmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return kitap;
-    }
-
-    public void tumUrunler() {
+    public void tumUrunler(Kitaplar kitaplar) {
 
         System.out.println("ürünleri getiriyor...");
 
         try {
-            String sql = "SELECT \"KitapNo\", \"ISBN\", \"KitapAdi\",\"YayinEviNo\",\"KategoriNo\",\"SayfaSayisi\",\"DilNo\"  FROM \"Kitaplar\"";
+            String sql = "SELECT \"KitapNo\", \"ISBN\", \"KitapAdi\",\"YayinEviNo\",\"KategoriNo\",\"SayfaSayisi\",\"DilNo\",\"OwnerId\"  FROM \"Kitaplar\"";
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -94,6 +56,7 @@ public class KitaplarRepositoryPostgreSQL {
             int yayinevino;
             int kategorino;
             int dilno;
+            String value = null;
 
 
             while (rs.next()) {
@@ -104,14 +67,31 @@ public class KitaplarRepositoryPostgreSQL {
                 kategorino = rs.getInt("KategoriNo");
                 sayfa = rs.getInt("SayfaSayisi");
                 dilno = rs.getInt("DilNo");
+                value = rs.getString("OwnerId");
 
-                System.out.print("KitapNo:" + KitapNo);
-                System.out.print(" ISBN: " + Isbn);
-                System.out.print(" Kitap Adı: " + adi);
-                System.out.print(" Yayın Evi No: " + yayinevino);
-                System.out.print(" Kategori No: " + kategorino);
-                System.out.print(" Sayfa Sayısı: " + sayfa);
-                System.out.println(" Dil Kodu: " + dilno);
+                switch (kitaplar) {
+                    case ALL:
+
+                        printKitaplar(KitapNo, Isbn, adi, yayinevino, kategorino, sayfa, dilno);
+
+                        break;
+
+                    case ALINAN:
+
+                        if (value != null && Integer.parseInt(value) == Main.uye.getno()) {
+                            printKitaplar(KitapNo, Isbn, adi, yayinevino, kategorino, sayfa, dilno);
+                        }
+
+                        break;
+
+                    case ALINMAYAN:
+
+                        if (value == null) {
+                            printKitaplar(KitapNo, Isbn, adi, yayinevino, kategorino, sayfa, dilno);
+                        }
+                        break;
+                }
+
             }
 
             rs.close();
@@ -119,6 +99,16 @@ public class KitaplarRepositoryPostgreSQL {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void printKitaplar(int kitapNo, int isbn, String adi, int yayinevino, int kategorino, int sayfa, int dilno) {
+        System.out.print("KitapNo:" + kitapNo);
+        System.out.print(" ISBN: " + isbn);
+        System.out.print(" Kitap Adı: " + adi);
+        System.out.print(" Yayın Evi No: " + yayinevino);
+        System.out.print(" Kategori No: " + kategorino);
+        System.out.print(" Sayfa Sayısı: " + sayfa);
+        System.out.println(" Dil Kodu: " + dilno);
     }
 
     public void kaydet(Kitap Kitap) {
@@ -137,17 +127,15 @@ public class KitaplarRepositoryPostgreSQL {
         }
     }
 
-    public void sil(int kitapNo) {
-        System.out.println("ürün siliniyor...");
+    public void update(int kitapNo, Integer userId) {
 
-        String sql = "DELETE FROM \"Kitaplar\" WHERE \"KitapNo\"=" + kitapNo;
+        System.out.println("ürün güncelleniyor...");
 
+        String sql = "UPDATE \"Kitaplar\" SET \"OwnerId\"=" + userId + " WHERE \"KitapNo\"=" + kitapNo;
 
         try {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
-            //***** Bağlantı sonlandırma *****
-//            conn.close();
             stmt.close();
         } catch (Exception e) {
             e.printStackTrace();
