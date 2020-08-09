@@ -56,6 +56,7 @@ public class UyeRepositoryPostgreSQL {
         try {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
+            System.out.println("Üye eklendi.");
             //***** Bağlantı sonlandırma *****
 //            conn.close();
             stmt.close();

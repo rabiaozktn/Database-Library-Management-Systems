@@ -70,7 +70,6 @@ public class DilRepositoryPostgreSQL {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
             //***** Bağlantı sonlandırma *****
-            conn.close();
             stmt.close();
         } catch (Exception e) {
             e.printStackTrace();
