@@ -81,14 +81,15 @@ public class Main {
                 System.out.println("2- Alınan Kitapları Teslim Et");
                 System.out.println("3- Kitapları Listele");
                 System.out.println("4- Kitap bağışla");
-                System.out.println("5- Kitap Ödünç Al");
-                System.out.println("6- Yazarları Listele");
-                System.out.println("7- Üyelik Bilgilerimi Güncelle");
-                System.out.println("8- Yayın Evi Listele");
-                System.out.println("9- Dilleri Listele");
-                System.out.println("10- Kategorileri Listele");
-                System.out.println("11- Ana menüye dön");
-                System.out.println("12- Çıkış Yap");
+                System.out.println("5- Dil sil");
+                System.out.println("6- Kitap Ödünç Al");
+                System.out.println("7- Yazarları Listele");
+                System.out.println("8- Üyelik Bilgilerimi Güncelle");
+                System.out.println("9- Yayın Evi Listele");
+                System.out.println("10- Dilleri Listele");
+                System.out.println("11- Kategorileri Listele");
+                System.out.println("12- Ana menüye dön");
+                System.out.println("13- Çıkış Yap");
 
                 secim = getScannerInt("");
 
@@ -115,6 +116,10 @@ public class Main {
                     kitap = new Kitap(kitapno, isbn, adi, yayinEviNo, kategorino, sayfasayisi, dilNo);
                     kitaprepo.kaydet(kitap);
                 } else if (secim == 5) {
+                    dilRepo.getAll();
+                    int dilno = getScannerInt("Silmek istediğiniz dil no giriniz : ");
+                    dilRepo.delete(dilno);
+                } else if (secim == 6) {
                     kitaprepo.tumUrunler(Kitaplar.ALINMAYAN);
                     secim = getScannerInt("Ödünç almak istediğiniz Kitabın numarasını giriniz : ");
 
@@ -124,11 +129,11 @@ public class Main {
                     kitaprepo.update(secim, uye.getno());
                     System.out.println("Ürün Alınan Kitaplar Tablosuna eklendi.");
 
-                } else if (secim == 6) {
+                } else if (secim == 7) {
 
                     yazarRepo.getAll();
 
-                } else if (secim == 7) {
+                } else if (secim == 8) {
                     Adi = getScannerText("Adınızı Giriniz : ");
                     Soyadi = getScannerText("Soyadinizi Giriniz : ");
                     _sifre = getScannerText("Sadece Sayilardan olusan sifre giriniz : ");
@@ -137,16 +142,16 @@ public class Main {
                     uye = new Uye(Adi, Soyadi, KullaniciAdi, _sifre, email, uye.getno());
                     uyerepo.degistir(uye);
                     System.out.println("Bilgileriniz başarı ile değiştirilmiştir!");
-                } else if (secim == 8) {
-                    yayinRepo.getAll();
                 } else if (secim == 9) {
-                    dilRepo.getAll();
+                    yayinRepo.getAll();
                 } else if (secim == 10) {
-                    kategoryRepo.getAll();
+                    dilRepo.getAll();
                 } else if (secim == 11) {
+                    kategoryRepo.getAll();
+                } else if (secim == 12) {
                     devamMi = false;
                     uye = null;
-                } else if (secim == 12) {
+                } else if (secim == 13) {
                     devamMi = false;
                     exit = false;
                     Dao.getInstance().closeConnection();

@@ -61,5 +61,21 @@ public class DilRepositoryPostgreSQL {
         return value;
     }
 
+    public void delete(int kitapNo){
+        System.out.println("Dil siliniyor...");
+
+        String sql= "DELETE FROM \"Diller\" WHERE \"DilNo\"="+kitapNo;
+
+        try{
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate(sql);
+            //***** Bağlantı sonlandırma *****
+            conn.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

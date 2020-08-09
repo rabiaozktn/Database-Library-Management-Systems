@@ -127,6 +127,8 @@ public class KitaplarRepositoryPostgreSQL {
         }
     }
 
+
+
     public void update(int kitapNo, Integer userId) {
 
         System.out.println("ürün güncelleniyor...");
